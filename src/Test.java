@@ -284,23 +284,79 @@ public class Test<T> {
         LinkedList.printList(list);
         LinkedList.printList(list1);
         System.out.println("Merged list: ");
-        LinkedList.printList(list.mergeSorted(list1));
+        list.mergeAndStore(list1);
+        LinkedList.printList(list);
 
-        LinkedList<Integer> LinkedList = new LinkedList<Integer>();
-        LinkedListIterator<Integer> iterator2 = LinkedList.zeroth();
+        LinkedList<Integer> listToSplit = new LinkedList<Integer>();
+        LinkedListIterator<Integer> iterator2 = listToSplit.zeroth();
         int k = 0;
-        while (k<10){
+        while (k<11){
             Random random = new Random();
             int randomInt = random.nextInt(100);
-            LinkedList.insert(randomInt,iterator2);
+            listToSplit.insert(randomInt,iterator2);
             iterator2.advance();
             k++;
         }
 
         System.out.println("List to split: ");
-        LinkedList.printList(LinkedList);
-        LinkedList.splitAndSort();
+        LinkedList.printList(listToSplit);
+        System.out.println("Split: ");
+        listToSplit.splitEvenOdd();
+        System.out.println("Split in half: ");
+        listToSplit.splitInHalf();
+        System.out.println("Split and sort: ");
+        listToSplit.splitEvenOddAndSort();
 
+//Test EXTRA EXERCISES
+
+        LinkedList<Integer> elemntList = new LinkedList<Integer>();
+        LinkedListIterator<Integer> elementIterator = elemntList.zeroth();
+        int l = 0;
+        while (l<10){
+            Random random = new Random();
+            int randomInt = random.nextInt(100);
+            elemntList.insert(randomInt,elementIterator);
+            elementIterator.advance();
+            l++;
+        }
+        LinkedList<Integer> positionList = new LinkedList<Integer>();
+        LinkedListIterator<Integer> positionIterator = positionList.zeroth();
+        int m = -6;
+        while (m<10){
+            if(m%2 != 0){
+                positionList.insert(m,positionIterator);
+                positionIterator.advance();
+            }
+            m++;
+        }
+        System.out.println("List: ");
+        LinkedList.printList(elemntList);
+        System.out.println("Position list: ");
+        LinkedList.printList(positionList);
+        System.out.println("Only position list specified elements on list: ");
+        elemntList.printSpecifiedPositions(positionList);
+
+        System.out.println("Elements to convert to binary: ");
+        LinkedList.printList(list1);
+        list1.convertElementsToBinary();
+
+        LinkedList.printList(LinkedList.createListOutOfInt(1234));
+
+        DoublyLinkedList<Integer> integerDoublyLinkedList = new DoublyLinkedList<>();
+        DoublyListIterator<Integer> doublyListIterator = integerDoublyLinkedList.zeroth();
+        int h = 0;
+        while (h<10){
+            integerDoublyLinkedList.insert(h,doublyListIterator);
+            doublyListIterator.advance();
+            h++;
+        }
+        DoublyLinkedList.printList(integerDoublyLinkedList);
+        integerDoublyLinkedList.doublySwapNeighbors();
+        DoublyLinkedList.printList(integerDoublyLinkedList);
+        integerDoublyLinkedList.deleteEvenElements();
+        DoublyLinkedList.printList(integerDoublyLinkedList);
     }
+
+
 
 }

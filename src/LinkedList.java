@@ -1,3 +1,5 @@
+import javax.swing.*;
+
 public class LinkedList <T extends Comparable<T>> {
     private ListNode<T> header;
     public LinkedList(){
@@ -369,66 +371,63 @@ public class LinkedList <T extends Comparable<T>> {
         }
     }
 
-//13. Ndertoni nje funksion qe konverton nje liste te lidhur njedrejtimore ne nje liste te lidhur njedrejtimore rrethore.
-    public void makeCircular(){
-        if(this.isEmpty()){
-            return;
-        }
-        this.last().current.next = header;
-    }
-
-
 //**********************************************************************************************************************
-//LAB-1
+//EXTRA EXERCISES
+//1. Shkruani funksionin qe fshin nga nje liste te gjitha nyjet me vlere nje numer cift. Lista eshte:
+//a. e lidhur njedrejtimore
 
-    //Grupi - C
-    public static <T extends Comparable<T>> void mergeListsAlternatively(LinkedList<T> L1, LinkedList<T> L2){
-        if (L1.isEmpty() || L2.isEmpty()){
-            System.out.println("Cannot merge empty lists");
+    public void deleteEven(){
+        if (this.isEmpty()){
+            System.out.println("Empty list!");
             return;
         }
-        LinkedListIterator<T> iterator1 = L1.first();
-        LinkedListIterator<T> iterator2 = L2.first();
-        LinkedList<T> mergedList = new LinkedList<T>();
-        while (iterator1.isValid() && iterator2.isValid()){
-            mergedList.insert(iterator1.current.element, mergedList.zeroth());
-            mergedList.insert(iterator2.current.element, mergedList.zeroth());
-            iterator1.advance();
-            iterator2.advance();
+        LinkedListIterator<T> iterator = this.first();
+        while (iterator.isValid()){
+            if(((Integer)iterator.current.element) % 2 == 0){
+                this.remove(iterator.current.element);
+            }
+            iterator.advance();
         }
-        while (iterator1.isValid()){
-            mergedList.insert(iterator1.current.element, mergedList.zeroth());
-            iterator1.advance();
-        }
-        while (iterator2.isValid()){
-            mergedList.insert(iterator2.current.element, mergedList.zeroth());
-            iterator2.advance();
-        }
-        mergedList.reverseLinkedList();
-        printList(mergedList);
     }
 
-    //Grupi - D
-    public void deleteDublicates() {
-        for (LinkedListIterator<T> iterator1 = this.first(); iterator1.isValid(); iterator1.advance()) {
-            ListNode<T> temp = iterator1.current;
-            boolean flag = false;
-            for (LinkedListIterator<T> iterator2 = new LinkedListIterator<T>(iterator1.current.next); iterator2.isValid(); iterator2.advance()) {
-                if (temp.element.equals(iterator2.current.element)) {
-                    this.remove(temp.element);
-                    flag = true;
+//2. Na jepet nje liste e lidhur nje drejtimore L dhe nje liste tjeter e lidhur nje drejtimore P qe mban
+//   numra integer te renditur ne rend rrites. Shkruni nje funksion qe afishon elementet e L qe
+//   ndodhen ne pozicionet e specifikuara ne P.
+//   Psh nqs P = 1, 3, 4, 6 nga lista L do te afishohen elementi i pare, i trete, i katert dhe i gjashte.
+
+    public void printSpecifiedPositions(LinkedList<Integer> positionList){
+        if(this.isEmpty()){
+            System.out.println("Empty List!");
+            return;
+        }else if(positionList.isEmpty()){
+            System.out.println("Empty position list");
+            return;
+        }
+
+        LinkedListIterator<T> listIterator = this.zeroth();
+        LinkedListIterator<Integer> positionIterator = positionList.first();
+        int index = 0;
+
+        System.out.print("[ ");
+        while (positionIterator.isValid()){
+            if(positionIterator.current.element > 0){//Skip the invalid positions that might be on the positionList such as 0 or negative numbers
+                while (index != positionIterator.current.element){//Move through the main list until the index is equal to the index specified on the positionList
+                    listIterator.advance();
+                    index++;
                 }
+                System.out.print(listIterator.current.element+" ");
             }
-            if (flag) {
-                this.remove(temp.element);
-            }
+            positionIterator.advance();
         }
+        System.out.println("]");
     }
 
-    //Grupi - A
+//3. Shkruani funksionin qe bashkon dy lista te renditura te lidhura njedrejtimore pa prishur renditjen.
+//a. Duke krijuar nje liste te re
+
+    //Lab 1 - Grupi - A
 //Një funksionin që bashkon dy lista të renditura të lidhura një-drejtimore pa prishur renditjen e tyre.
 //Zgjidheni këtë problem duke krijuar një listë të re në të cilën do të ruhet bashkimi i dy listave të para.
-
     public void insertAtEnd(T element){
         LinkedListIterator<T> iterator = this.zeroth();
         while (iterator.nextIsValid()){
@@ -436,7 +435,6 @@ public class LinkedList <T extends Comparable<T>> {
         }
         this.insert(element,iterator);
     }
-
     public LinkedList<T> mergeSorted(LinkedList<T> list){
         LinkedList<T> mergedList = new LinkedList<T>();
         LinkedListIterator<T> listIterator = list.first();
@@ -464,12 +462,113 @@ public class LinkedList <T extends Comparable<T>> {
         }
         return mergedList;
     }
+//b. Lista e bashkuar ruhet ne listen e pare
+    public void mergeAndStore(LinkedList<T> list){
+        LinkedListIterator<T> thisIterator = this.zeroth();
+        LinkedListIterator<T> listIterator = list.first();
 
-    //Grupi - B
+        while (listIterator.isValid()){
+            if((listIterator.current.element.compareTo(thisIterator.current.next.element) < 0) || (!thisIterator.isValid())){
+                this.insert(listIterator.current.element,thisIterator);
+                thisIterator.advance();
+                listIterator.advance();
+            }else
+                thisIterator.advance();
+        }
+    }
+
+//4. Shkruani funksionin qe krijon nje liste njedrejtimore duke alternuar elementet nga dy lista te
+//   lidhura njedrejtimore. Psh nqs L1 = (1, 2, 6, 3, 5) dhe L2 = (7, 8, 4) atehere lista L3 e krijuar duhet
+//   te jete: L3 = (1, 7, 2, 8, 6, 4, 3, 5).
+//   Lab 1 - Grupi - C
+public static <T extends Comparable<T>> void mergeListsAlternatively(LinkedList<T> L1, LinkedList<T> L2){
+    if (L1.isEmpty() || L2.isEmpty()){
+        System.out.println("Cannot merge empty lists");
+        return;
+    }
+    LinkedListIterator<T> iterator1 = L1.first();
+    LinkedListIterator<T> iterator2 = L2.first();
+    LinkedList<T> mergedList = new LinkedList<T>();
+    while (iterator1.isValid() && iterator2.isValid()){
+        mergedList.insertAtEnd(iterator1.current.element);
+        mergedList.insertAtEnd(iterator2.current.element);
+        iterator1.advance();
+        iterator2.advance();
+    }
+    while (iterator1.isValid()){
+        mergedList.insertAtEnd(iterator1.current.element);
+        iterator1.advance();
+    }
+    while (iterator2.isValid()){
+        mergedList.insertAtEnd(iterator2.current.element);
+        iterator2.advance();
+    }
+    printList(mergedList);
+}
+
+//5. Ndertoni nje funksion qe konverton nje liste te lidhur njedrejtimore ne nje liste te lidhur
+//   njedrejtimore rrethore.
+public void makeCircular(){
+    if(this.isEmpty()){
+        return;
+    }
+    this.last().current.next = header;
+}
+
+//6. Ndertoni nje funksion qe fshin dublikatat nga nje liste e lidhur
+//a. njedrejtimore
+
+    //Lab 1 - Grupi - D
+    public void deleteDublicates() {
+        for (LinkedListIterator<T> iterator1 = this.first(); iterator1.isValid(); iterator1.advance()) {
+            ListNode<T> temp = iterator1.current;
+            boolean flag = false;
+            for (LinkedListIterator<T> iterator2 = new LinkedListIterator<T>(iterator1.current.next); iterator2.isValid(); iterator2.advance()) {
+                if (temp.element.equals(iterator2.current.element)) {
+                    this.remove(temp.element);
+                    flag = true;
+                }
+            }
+            if (flag) {
+                this.remove(temp.element);
+            }
+        }
+    }
+
+
+//7. Ndertoni nje funksion qe ndan nje liste te lidhur njedrejtimore L cfaredo, ne dy lista:
+//a. L1 mban elementet cift dhe L2 mban elementet tek te L
+//b. L1 mban elementet cift te renditur ne rend rrites dhe L2 mban elementet tek te renditur ne rend rrites
+
+    public void splitEvenOdd(){
+        if (this.isEmpty()){
+            System.out.println("Empty List!");
+            return;
+        }
+
+        LinkedList<T> list1 = new LinkedList<>();
+        LinkedList<T> list2 = new LinkedList<>();
+        LinkedListIterator<T> thisIterator = this.first();
+        while (thisIterator.isValid()){
+            list1.insertAtEnd(thisIterator.current.element);
+            if (thisIterator.nextIsValid())
+                thisIterator.advance();
+            else
+                break;
+            list2.insertAtEnd(thisIterator.current.element);
+            thisIterator.advance();
+        }
+
+        System.out.println("List 1: ");
+        printList(list1);
+        System.out.println("List 2: ");
+        printList(list2);
+    }
+
+    //Lab 1 - Grupi - B
 //Ndërtoni një funksion që ndan një listë të lidhur njëdrejtimore L1 cfarëdo, në dy lista:
 //L2 mban elementet cift të renditur në rend rritës dhe L3 mban elementet tek të renditur në rend rritës
-
-    public void splitAndSort(){
+    public void splitEvenOddAndSort(){
         if(this.isEmpty()){
             System.out.println("Empty List!");
         }
@@ -481,7 +580,10 @@ public class LinkedList <T extends Comparable<T>> {
 
         while (thisIterator.isValid()){
             list1.insertSorted(thisIterator.current.element);
-            thisIterator.advance();
+            if (thisIterator.nextIsValid())
+                thisIterator.advance();
+            else
+                break;
             list2.insertSorted(thisIterator.current.element);
             thisIterator.advance();
         }
@@ -492,8 +594,65 @@ public class LinkedList <T extends Comparable<T>> {
         printList(list2);
     }
 
-//**********************************************************************************************************************
-//EXTRA EXERCISES
+//8. Ndertoni nje funksion qe ndan nje liste L pergjysem. Gjysma e pare e L te ruhet ne L1 dhe gjysma
+//   e dyte ne L2. Nqs numri i elementeve te L eshte tek atehere L1 do te kete nje element me shume se L2.
+//   L1 dhe L2 jane lista te lidhura njedrejtimore.
+//a. Lista L eshte e lidhur njedrejtimore
+    public void splitInHalf(){
+        if(this.isEmpty()){
+            System.out.println("Empty list!");
+            return;
+        }
 
+        LinkedList<T> list1 = new LinkedList<>();
+        LinkedList<T> list2 = new LinkedList<>();
+        LinkedListIterator<T> thisIterator = this.first();
+        int listSize = this.getSize();
+        int i = 0;
+        while (thisIterator.isValid()){
+            if(i < listSize/2){
+               list2.insertAtEnd(thisIterator.current.element);
+            }else {
+                list1.insertAtEnd(thisIterator.current.element);
+            }
+            thisIterator.advance();
+            i++;
+        }
+        System.out.println("List 1: ");
+        printList(list1);
+        System.out.println("List 2: ");
+        printList(list2);
+    }
+//9. Jepet nje liste e lidhur njedrejtimore L me vlera te nyjeve nga 0 deri ne 9 ku secila perfaqeson
+//   nje shifer te nje numri dhjetor (shifra me peshe me te vogel ne head te listes). Ndertoni nje
+//   funksion qe printon vleren binare te ketij numri. Lista boshe duhet te printoje 0.
+
+    public void convertElementsToBinary(){
+        if(this.isEmpty()){
+            System.out.println("0");
+            return;
+        }
+        this.reverseLinkedList();
+        for (LinkedListIterator<T> iterator = this.first(); iterator.isValid(); iterator.advance()){
+            int nr = (Integer)iterator.current.element;
+            while (nr > 0){
+                System.out.print(nr%2);
+                nr /= 2;
+            }
+        }
+        System.out.println();
+    }
+
+//10. Ndertoni nje funksion qe merr nje numer te plote dhe krijon nje liste si ne ushtrimin 7, (shifra
+//    me peshe me te ulet ne head te listes).
+
+    public static LinkedList<Integer> createListOutOfInt(int nr){
+        LinkedList<Integer> list = new LinkedList<>();
+        while (nr > 0){
+            list.insertAtEnd(nr % 10);
+            nr /= 10;
+        }
+        return list;
+    }
 }
 

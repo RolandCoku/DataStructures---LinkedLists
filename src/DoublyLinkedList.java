@@ -137,4 +137,61 @@ public class DoublyLinkedList <T extends Comparable<T>>{
         trailer.previous.next = newNode;
         trailer.previous = newNode;
     }
+
+//**********************************************************************************************************************
+//1. Shkruani funksionin qe fshin nga nje liste te gjitha nyjet me vlere nje numer cift. Lista eshte:
+//b. e lidhur dydrejtimore
+    public void deleteEvenElements(){
+        DoublyListIterator<T> iterator = this.first();
+        while (iterator.current != trailer){
+            if(((Integer)iterator.current.element) % 2 == 0) {
+                iterator.current.previous.next = iterator.current.next;
+                iterator.current.next.previous = iterator.current.previous;
+            }
+            iterator.advance();
+        }
+    }
+//6. Ndertoni nje funksion qe fshin dublikatat nga nje liste e lidhur
+//b. dydrejtimore
+    public void deleteDuplicates(){
+        DoublyListIterator<T> iterator1 = this.first();
+        while (iterator1.current != trailer){
+            DoublyListIterator<T> iterator2 = new DoublyListIterator<>(iterator1.current.next);
+            while (iterator2.current != trailer){
+                if(iterator1.current.element.equals(iterator2.current.element)){
+                    iterator2.current.previous.next = iterator2.current.next;
+                    iterator2.current.next.previous = iterator2.current.previous;
+                }
+                iterator2.advance();
+            }
+            iterator1.advance();
+        }
+    }
+
+//8. Ndertoni nje funksion qe ndan nje liste L pergjysem. Gjysma e pare e L te ruhet ne L1 dhe gjysma e dyte ne L2.
+//   Nqs numri i elementeve te L eshte tek atehere L1 do te kete nje element me shume se L2.
+//   L1 dhe L2 jane lista te lidhura njedrejtimore.
+//b. Lista L eshte e lidhur dydrejtimore rrethore
+    public void splitList() {
+        DoublyLinkedList<T> list1 = new DoublyLinkedList<>();
+        DoublyLinkedList<T> list2 = new DoublyLinkedList<>();
+        DoublyListIterator<T> iterator1 = this.first();
+        DoublyListIterator<T> iterator2 = list1.zeroth();
+        DoublyListIterator<T> iterator3 = list2.zeroth();
+
+        while (iterator1.current != trailer) {
+            iterator2.current.next = new DoublyListNode<>(iterator1.current.element, iterator2.current.next, iterator2.current);
+            iterator2.current.next.next.previous = iterator2.current.next;
+            iterator1.advance();
+            if (iterator1.current != trailer) {
+                iterator3.current.next = new DoublyListNode<>(iterator1.current.element, iterator3.current.next, iterator3.current);
+                iterator3.current.next.next.previous = iterator3.current.next;
+                iterator1.advance();
+            }
+            iterator2.advance();
+            iterator3.advance();
+        }
+
+    }
+
 }
