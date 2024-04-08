@@ -1,5 +1,3 @@
-import javax.swing.*;
-
 public class LinkedList <T extends Comparable<T>> {
     private ListNode<T> header;
     public LinkedList(){
